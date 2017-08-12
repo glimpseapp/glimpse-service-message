@@ -36,7 +36,15 @@ kubectl apply -f kube-service.yaml
 
 Run locally
 -----------
+With docker:
 ```docker run -p 5000:80 gcr.io/glimpse-123456/glimpse-service-message```
+
+Or directly on your machine:
+```
+virtualenv -p python3 venv
+. venv/bin/activate
+python app.py
+```
 
 You may have also to port forward the services used by this microservice e.g.:
 ```
