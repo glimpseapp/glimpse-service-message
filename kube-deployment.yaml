@@ -10,16 +10,16 @@ spec:
         app: glimpse-service-message
     spec:
       containers:
-#      - name: esp
-#        image: gcr.io/endpoints-release/endpoints-runtime:1
-#        args: [
-#          "-p", "8081",
-#          "-a", "127.0.0.1:5000",
-#          "-s", "glimpse-service-message.endpoints.glimpse-123456.cloud.goog",
-#          "-v", "2017-08-12r4",
-#        ]
-#        ports:
-#          - containerPort: 8081
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "-p", "8081",
+          "-a", "127.0.0.1:5000",
+          "-s", "glimpse-service-message.endpoints.glimpse-123456.cloud.goog",
+          "-v", "2017-08-12r0",
+        ]
+        ports:
+          - containerPort: 8081
       - name: message
         image: gcr.io/glimpse-123456/glimpse-service-message:latest
         ports:
