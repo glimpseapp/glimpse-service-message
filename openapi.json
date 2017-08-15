@@ -6,6 +6,12 @@
     "version": "1.0.0"
   },
   "host": "glimpse-service-message.endpoints.glimpse-123456.cloud.goog",
+  "x-google-endpoints": [
+    {
+      "name": "glimpse-service-message.endpoints.glimpse-123456.cloud.goog",
+      "target": "35.196.115.58"
+    }
+  ],
   "basePath": "/",
   "consumes": [
     "application/json"
@@ -85,67 +91,8 @@
           }
         }
       }
-    },
-    "/view/{message_id}": {
-      "post": {
-        "description": "Marks a message as viewed, and send the path",
-        "operationId": "Viewed",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "message_id",
-            "in": "path",
-            "description": "ID of the message",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-          }
-        }
-      }
-    },
-    "/path/{message_id}/{user_id}": {
-      "get": {
-        "description": "Show the path of a user for this message",
-        "operationId": "User view path",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "message_id",
-            "in": "path",
-            "description": "ID of the message",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "user_id",
-            "in": "path",
-            "description": "ID of the user",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-          }
-        }
-      }
     }
   },
   "securityDefinitions": {
-    "firebase": {
-      "authorizationUrl": "",
-      "flow": "implicit",
-      "type": "oauth2",
-      "x-google-issuer": "https://securetoken.google.com/glimpse-123456",
-      "x-google-jwks_uri": "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com",
-      "x-google-audiences": ""
-    }
   }
 }
