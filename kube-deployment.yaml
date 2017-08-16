@@ -27,3 +27,5 @@ spec:
         env:
         - name: CASSANDRA_HOST
           value: cassandra
+        - name: GLIMPSE_SERVICE_ASSET
+          value: asset

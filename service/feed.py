@@ -1,8 +1,12 @@
+import json
+
+import requests
 from cassandra.cqlengine import connection
 from flask import make_response
 from flask_restful import Resource, request
 
 from conf.config import CASSANDRA_HOSTS, USER_KEYSPACE
+from conf.service import IMAGES_URL_BULK_URL
 from model.message import MessageByReceiver
 
 
@@ -20,11 +24,30 @@ class Feed(Resource):
 
         feed_result = MessageByReceiver.filter(receiver_id=user_id)
         feeds = []
+        asset_names = []
 
         for feed in feed_result:
-            feeds.append(feed.to_object())
+            feed_object = feed.to_object()
+            feeds.append(feed_object)
+
+            asset_names.append(feed_object.get('asset_name'))
+
+        images_url = self._get_images_url(asset_names)
+
+        feed_response = []
+        for feed in feeds:
+            feed['asset_url'] = images_url.get(feed.get("asset_name")).get("image_url")
+            feed_response.append(feed)
 
         return {
             "tot": feed_result.count(),
-            "feed": feeds
+            "feed": feed_response
         }
+
+    @staticmethod
+    def _get_images_url(asset_names):
+        payload = json.dumps({"images": asset_names})
+        headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
+        response = requests.post(IMAGES_URL_BULK_URL, data=payload, headers=headers)
+        data = response.json()
+        return data.get("images")
