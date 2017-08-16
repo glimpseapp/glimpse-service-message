@@ -3,6 +3,15 @@ Glimpse Service Message
 This service is responsible to send message and display the inbox
 
 
+Install
+-------
+Install virtualenv and python dependencies
+```
+virtualenv -p python3 venv
+. venv/bin/activate
+```
+
+
 Deploy
 ------
 Build docker image and push to Google container registry

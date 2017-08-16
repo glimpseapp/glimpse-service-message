@@ -16,13 +16,16 @@ class MessageBySender(Model):
     message = columns.Text()
     audience = columns.Text()
 
+    asset_name = columns.Text()
+
     def to_object(self):
         return {
             'sender_id': str(self.sender_id),
             'receiver_id': str(self.receiver_id),
             'time': self.time.isoformat(),
             'message': self.message,
-            'audience': self.audience
+            'audience': self.audience,
+            'asset_name': self.asset_name,
         }
 
 
@@ -35,12 +38,15 @@ class MessageByReceiver(Model):
     message = columns.Text()
     audience = columns.Text()
 
+    asset_name = columns.Text()
+
     def to_object(self):
         return {
             'sender_id': str(self.sender_id),
             'receiver_id': str(self.receiver_id),
             'time': self.time.isoformat(),
             'message': self.message,
-            'audience': self.audience
+            'audience': self.audience,
+            'asset_name': self.asset_name,
         }
 

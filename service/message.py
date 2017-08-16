@@ -12,22 +12,31 @@ class Message(Resource):
 
         data = request.get_json(silent=True)
 
-        if not data.get('user_id'):
-            return make_response("Missing field user_id", 500)
-
-        if not data.get('audience'):
-            return make_response("Must specify the audience", 500)
-
         sender_id = data.get('user_id')
         audience = data.get('audience', Audience.DIRECT)
+        receiver_id = data.get('receiver_id', [])
+        asset = data.get('asset', {})
+        message = data.get('message')
+
+        if not sender_id:
+            return make_response("Missing field user_id", 500)
+
+        if not audience:
+            response_message = "Must specify the audience. Audience can be: " + Audience.DIRECT + ", " \
+                               + Audience.FRIENDS + ", " + Audience.PUBLIC
+            return make_response(response_message, 500)
 
         if audience == Audience.DIRECT:
-            receiver_ids = [data.get('receiver_id')]
+            receiver_ids = [receiver_id]
 
         if audience == Audience.FRIENDS:
             receiver_ids = self._get_friends(sender_id)
 
-        message = data.get('message')
+        if asset and (not asset.get('asset_name')):
+            return make_response("Must specify asset.asset_name", 500)
+
+        asset_name = asset.get('asset_name')
+        # public not implemented yet
 
         connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=USER_KEYSPACE)
 
@@ -36,18 +45,20 @@ class Message(Resource):
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 audience=audience,
-                message=message
+                message=message,
+                asset_name=asset_name,
             )
 
             MessageBySender.create(
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 audience=audience,
-                message=message
+                message=message,
+                asset_name=asset_name,
             )
 
         return {
-            "success" : True
+            "success": True
         }
 
     def _get_friends(self, sender_id):

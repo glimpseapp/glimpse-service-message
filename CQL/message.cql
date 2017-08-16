@@ -8,6 +8,8 @@ CREATE TABLE message.message_by_sender (
    message TEXT,
    audience TEXT,
 
+   asset_name TEXT,
+
    PRIMARY KEY ((sender_id), time)
 ) WITH CLUSTERING ORDER BY (time DESC);
 
@@ -18,6 +20,8 @@ CREATE TABLE message.message_by_receiver (
    sender_id TEXT,
    message TEXT,
    audience TEXT,
+
+   asset_name TEXT,
 
    PRIMARY KEY ((receiver_id), time)
 ) WITH CLUSTERING ORDER BY (time DESC);
