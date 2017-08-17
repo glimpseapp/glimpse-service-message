@@ -28,4 +28,4 @@ spec:
         - name: CASSANDRA_HOSTS
           value: cassandra
         - name: GLIMPSE_SERVICE_ASSET
-          value: glimpse-service-asset # internal name for the service
+          value: http://glimpse-service-asset # internal name for the service
