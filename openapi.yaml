@@ -1,0 +1,63 @@
+swagger: '2.0'
+info:
+  description: Manage the messages
+  title: Glimpse Service Message
+  version: 1.0.0
+host: message.glimpse.online
+basePath: "/"
+consumes:
+- application/json
+produces:
+- application/json
+schemes:
+- https
+paths:
+
+  "/healthz":
+    get:
+      description: Check the health of the service
+      operationId: healthz
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Service is healthy
+          schema:
+            properties:
+              status:
+                type: boolean
+
+  "/feed":
+    post:
+      description: Get the list of messages
+      operationId: Feed
+      produces:
+      - application/json
+      responses:
+        '200': {}
+
+  "/message":
+    post:
+      description: Post a message
+      operationId: Post Message
+      produces:
+      - application/json
+      responses:
+        '200': {}
+
+  "/viewers/{message_id}":
+    get:
+      description: Get the list of users who view this message
+      operationId: Viewers
+      produces:
+      - application/json
+      parameters:
+      - name: message_id
+        in: path
+        description: ID of the message
+        required: true
+        type: string
+      responses:
+        '200': {}
+
+securityDefinitions: {}
