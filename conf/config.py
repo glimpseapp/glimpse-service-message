@@ -8,4 +8,6 @@ CASSANDRA_HOSTS = os.getenv("CASSANDRA_HOSTS", None)
 if isinstance(CASSANDRA_HOSTS, str):
     CASSANDRA_HOSTS = CASSANDRA_HOSTS.split(',')
 
-USER_KEYSPACE = "message"
+MESSAGE_KEYSPACE = "message"
+
+MESSAGE_SENT_TOPIC = os.getenv("MESSAGE_SENT_TOPIC", "message-sent")

@@ -16,7 +16,7 @@ spec:
           "-p", "8081",
           "-a", "127.0.0.1:5000",
           "-s", "message.glimpse.online",
-          "-v", "2017-08-17r1",
+          "-v", "2017-08-19r0",
         ]
         ports:
           - containerPort: 8081
@@ -29,3 +29,5 @@ spec:
           value: cassandra
         - name: GLIMPSE_SERVICE_ASSET
           value: http://glimpse-service-asset # internal name for the service
+        - name: MESSAGE_SENT_TOPIC
+          value: message-sent

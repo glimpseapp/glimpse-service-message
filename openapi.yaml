@@ -2,62 +2,151 @@ swagger: '2.0'
 info:
   description: Manage the messages
   title: Glimpse Service Message
-  version: 1.0.0
+  version: 0.0.1-alpha
 host: message.glimpse.online
-basePath: "/"
+basePath: /
 consumes:
 - application/json
 produces:
 - application/json
 schemes:
-- https
+- http
 paths:
 
   "/healthz":
     get:
       description: Check the health of the service
-      operationId: healthz
-      produces:
-      - application/json
+      operationId: Healthz
       responses:
-        '200':
+        200:
           description: Service is healthy
           schema:
-            properties:
-              status:
-                type: boolean
-
-  "/feed":
-    post:
-      description: Get the list of messages
-      operationId: Feed
-      produces:
-      - application/json
-      responses:
-        '200': {}
+            $ref: "#/definitions/SuccessResponse"
 
   "/message":
     post:
       description: Post a message
-      operationId: Post Message
-      produces:
-      - application/json
-      responses:
-        '200': {}
-
-  "/viewers/{message_id}":
-    get:
-      description: Get the list of users who view this message
-      operationId: Viewers
-      produces:
-      - application/json
+      operationId: PostMessage
       parameters:
-      - name: message_id
-        in: path
-        description: ID of the message
+      - in: body
+        name: message
+        description: Message posted
         required: true
-        type: string
+        schema:
+          $ref: "#/definitions/MessageParameters"
       responses:
-        '200': {}
+        200:
+          description: Message sent
+          schema:
+            $ref: "#/definitions/MessageSentResponse"
 
-securityDefinitions: {}
+  "/feed":
+    post:
+      description: Get the list of messages
+      operationId: GetFeed
+      parameters:
+      - in: body
+        name: filter
+        description: Filter
+        required: true
+        schema:
+          $ref: "#/definitions/FeedFilterParameters"
+      responses:
+        200:
+          description: Return the list of messages filtered by user
+          schema:
+            $ref: "#/definitions/FeedResult"
+
+definitions:
+  SuccessResponse:
+    type: object
+    properties:
+      status:
+        type: boolean
+  MessageParameters:
+    type: object
+    properties:
+      user_id:
+        description: UserId of the sender
+        type: string
+      receiver_id:
+        description: UserId of the receiver
+        type: string
+      audience:
+        description: Audience of this message (direct | friends | public)
+        type: string
+      message:
+        description: Text message
+        type: string
+      asset:
+        $ref: "#/definitions/MessageAssetName"
+
+  MessageAssetName:
+    description: Information of the asset submitted
+    type: object
+    properties:
+      asset_name:
+        description: Name of the asset sent in the message
+        type: string
+
+  MessageSentResponse:
+    type: object
+    properties:
+      status:
+        type: boolean
+
+  FeedFilterParamters:
+    type: object
+    required:
+      - user_id
+    properties:
+      user_id:
+        description: Select the user_id
+        type: string
+
+  FeedResult:
+    type: object
+    properties:
+      tot:
+        description: Number of messages
+        type: integer
+      feed:
+        $ref: "#/definitions/FeedMessage"
+
+  FeedMessage:
+    type: object
+    properties:
+      sender_id:
+        description: UserId of the sender
+        type: string
+      receiver_id:
+        type: string
+      time:
+        description: Send time
+        type: string
+        format: dateTime
+      message:
+        description: Text of the message
+        type: string
+      audience:
+        type: string
+      asset_name:
+        description: Name of the asset in the message
+        type: string
+      asset_url:
+        description: URL of the asset in the message
+        type: string
+
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+
+  firebase:
+    authorizationUrl: ""
+    flow: implicit
+    type: oauth2
+    x-google-issuer: "https://securetoken.google.com/glimpse-123456"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"

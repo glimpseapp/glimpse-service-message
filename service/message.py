@@ -1,10 +1,14 @@
+import json
+
 from cassandra.cqlengine import connection
 from flask import make_response
 from flask_restful import Resource, request
 
-from conf.config import CASSANDRA_HOSTS, USER_KEYSPACE
+from conf.config import CASSANDRA_HOSTS, MESSAGE_KEYSPACE, MESSAGE_SENT_TOPIC
 from model.audience import Audience
 from model.message import MessageByReceiver, MessageBySender
+
+from google.cloud import pubsub
 
 
 class Message(Resource):
@@ -38,7 +42,7 @@ class Message(Resource):
         asset_name = asset.get('asset_name')
         # public not implemented yet
 
-        connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=USER_KEYSPACE)
+        connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=MESSAGE_KEYSPACE)
 
         for receiver_id in receiver_ids:
             MessageByReceiver.create(
@@ -46,16 +50,24 @@ class Message(Resource):
                 sender_id=sender_id,
                 audience=audience,
                 message=message,
-                asset_name=asset_name,
+                asset_name=asset_name
             )
-
             MessageBySender.create(
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 audience=audience,
                 message=message,
-                asset_name=asset_name,
+                asset_name=asset_name
             )
+
+            message_object = {
+                "receiver_id": receiver_id,
+                "sender_id": sender_id,
+                "audience": audience,
+                "message": message,
+                "asset_name": asset_name
+            }
+            self._message_sent(message_object)
 
         return {
             "success": True
@@ -64,3 +76,17 @@ class Message(Resource):
     def _get_friends(self, sender_id):
         # return list of friends
         return []
+
+    @staticmethod
+    def _message_sent(message):
+        client = pubsub.Client()
+        topic = client.topic(MESSAGE_SENT_TOPIC)
+
+        messageGrammar = {
+            "verb": "message-sent",
+            "subject": "message",
+            "directObject": message
+        }
+
+        topic.publish(json.dumps(messageGrammar))
+        return message

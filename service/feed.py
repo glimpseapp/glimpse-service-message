@@ -5,7 +5,7 @@ from cassandra.cqlengine import connection
 from flask import make_response
 from flask_restful import Resource, request
 
-from conf.config import CASSANDRA_HOSTS, USER_KEYSPACE
+from conf.config import CASSANDRA_HOSTS, MESSAGE_KEYSPACE
 from conf.service import IMAGES_URL_BULK_URL
 from model.message import MessageByReceiver
 
@@ -20,7 +20,7 @@ class Feed(Resource):
 
         user_id = data.get('user_id')
 
-        connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=USER_KEYSPACE)
+        connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=MESSAGE_KEYSPACE)
 
         feed_result = MessageByReceiver.filter(receiver_id=user_id)
         feeds = []
@@ -40,7 +40,7 @@ class Feed(Resource):
             feed_response.append(feed)
 
         return {
-            "tot": feed_result.count(),
+            "tot": len(feed_result),
             "feed": feed_response
         }
 
