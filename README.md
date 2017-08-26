@@ -1,4 +1,4 @@
-Glimpse Service Message
+Glimpse Service Message [DEPRECATED]
 ====================
 This service is responsible to send message and display the inbox
 
